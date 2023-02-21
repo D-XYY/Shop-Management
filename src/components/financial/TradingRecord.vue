@@ -37,33 +37,14 @@
         </div>
       </el-container>
     </div>
-    <div class="content-row">
-      <el-row><!--三个操作-->
-        <el-button type="primary" @click="requestData">检索</el-button>
-        <el-button type="danger" @click="clear">清空</el-button>
-        <el-button type="primary" @click="exportData">导出</el-button>
-      </el-row>
-    </div>
-    <div><!--改变操作-->
-      <el-table :data="orderList" style="width: 100%">
-        <el-table-column label="名称" width="127" prop="name" />
-        <el-table-column label="单号" width="127" prop="call" />
-        <el-table-column label="用户" width="127" prop="user" />
-        <el-table-column label="支付方式" width="210" prop="pay">
-          <template #default="scope">
-            <el-tag :type="scope.row.pay ? '' : 'success'">{{ scope.row.pay ? '微信' : '支付宝' }}</el-tag>
-
-          </template>
-        </el-table-column>
-        <el-table-column label="时间" width="210" prop="time" />
-      </el-table>
-    </div>
-</div>
+    <Table :GoodsData="orderList" :Btn="btn" :TbName="tbname" :BtnIf="btnif" :Tableif="tableif" :TabIf="tabif"></Table>
+  </div>
 </template>
 
 <script>
 import Mock from '@/mock/Mock.js'
 import Tool from '@/tools/Tool.js'
+import table from '../other/table.vue'
 export default {
   data() {
     return {
@@ -78,8 +59,49 @@ export default {
         call: '',
         paytime: '',
       },
+
+      //按钮名称
+      btn: {
+        name1: '检索',
+        name2: '清空',
+        name3: '导出'
+      },
+      btnif: {
+        totl: true,
+        if1: true,
+        if2: true,
+        if3: true,
+      },
+      //table组件表头名称
+      tbname: {
+        name1: '名称',
+        name2: '单号',
+        name3: '用户',
+        tag1: '支付方式',
+        name7: '时间'
+      },
+      tableif: {
+        if1: true,
+        if2: true,
+        if3: true,
+        tag1: true,
+        if7: true,
+      },
+      tabif: {
+        totl: false
+      }
     }
-  },//组件渲染时获取数据
+  },
+  provide() {
+    return {
+      Method1: this.requestData,
+      Method2: this.clear,
+      Method3: this.exportData,
+
+    }
+  },
+
+  //组件渲染时获取数据
   mounted() {
     this.orderList = Mock.getfinancial()
   },
@@ -108,6 +130,9 @@ export default {
       })
       Tool.exportJson('订单数据.json', JSON.stringify(this.orderList))
     },
+  },
+  components: {
+    Table: table
   }
 }
 </script>

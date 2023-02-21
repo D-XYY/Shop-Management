@@ -19,38 +19,14 @@
         </el-select>
       </el-container>
     </div>
-    <div class="content-row">
-      <el-row><!--两个操作-->
-        <el-button type="primary" @click="requestData">检索</el-button>
-        <el-button type="primary" @click="clear">清空</el-button>
-      </el-row>
-    </div>
-    <div>
-      <el-table :data="list" style="width: 100%;">
-        <el-table-column label="分销人" width="150" prop="name" />
-        <el-table-column label="微信信息" width="150" prop="weixin" />
-        <el-table-column label="所处状态" width="150">
-          <template #default="scope">
-            <el-tag :type="scope.row.state ? '' : 'success'">{{ scope.row.state ? '审核通过' : '审核中' }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="收入总额" width="150" prop="total" />
-        <el-table-column label="退款" width="150" prop="backPrice" />
-        <el-table-column label="来源" width="150">
-          <template #default="scope">
-            <el-tag :type="success">{{ scope.row.origin }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="客户数量" width="150" prop="count" />
-        <el-table-column label="更新时间" prop="updateTime" />
 
-      </el-table>
-    </div>
-
-</div>
+    <Table :GoodsData="list" :Btn="btn" :TbName="tbname" :BtnIf="btnif" :Tableif="tableif" :TabIf="tabif">
+    </Table>
+  </div>
 </template>
 <script>
 import Mock from '@/mock/Mock.js'
+import table from '../other/table.vue'
 export default {
   data() {
     return {
@@ -60,9 +36,50 @@ export default {
         state: ''
       },
       options: ['休假', '外派', '在职'],
-      list: []
+      list: [],
+      //按钮名称
+      btn: {
+        name1: '检索',
+        name2: '清空'
+      },
+      tbname: {
+        name1: '分销人',
+        name2: '微信信息',
+        name3: '收入总额',
+        name4: '退款',
+        tag1: '所处状态',
+        tag2: '来源',
+        name7: '客户数量',
+        name8: '更新时间'
+      },
+      btnif: {
+        totl: true,
+        if1: true,
+        if2: true,
+      },
+      tableif: {
+        if1: true,
+        if2: true,
+        if3: true,
+        if4: true,
+        tag1: true,
+        tag2: true,
+        if7: true,
+        if8: true,
+      },
+      tabif: {
+        totl: false
+      }
     }
   },
+  //传送方法
+  provide() {
+    return {
+      Method1: this.requestData,
+      Method2: this.clear
+    }
+  },
+
   methods: {
     //检索
     requestData() {
@@ -79,6 +96,9 @@ export default {
   },
   mounted() {
     this.list = Mock.getList()
+  },
+  components: {
+    Table: table
   }
 }
 </script>

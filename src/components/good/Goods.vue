@@ -32,47 +32,18 @@
 
       </el-container>
     </div>
-    <div class="content-row">
-      <el-row><!--三个操作-->
-        <el-button type="primary" @click="requestData">检索</el-button>
-        <el-button type="primary" @click="clear">显示全部</el-button>
-        <el-button type="primary" @click="addGoods">新增商品</el-button>
-      </el-row>
-    </div>
-    <!--商品列表-->
-    <div><!--改变操作-->
-      <el-table :data="goodsData" style="width: 100%">
-        <el-table-column label="商品" width="150" prop="name">
-          <template #default="scope">
-            <div text-align="center">
-              <el-image style="width: 60px; height: 100px" :src="scope.row.img" />
-            </div>
-            <span class="demonstration" text-align="center">{{ scope.row.name }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="价格" width="150" prop="price" />
-        <el-table-column label="销量" width="150" prop="sellCount" />
-        <el-table-column label="库存" width="150" prop="count" />
-        <el-table-column label="退款数量" width="150" prop="back" />
-        <el-table-column label="退款金额" width="150" prop="price" />
-        <el-table-column label="操作" width="150">
-          <template #default="scope"><!--删除和联系操作-->
-            <el-button :type="scope.row.state ? 'danger' : 'success'" @click="operate(scope.row)">{{ scope.row.state
-              ? '下架' : '上架' }}</el-button>
-          </template>
-        </el-table-column>
-        <el-table-column label="管理员" width="150" prop="owner" />
-        <el-table-column label="更新时间" width="200" prop="time" />
-      </el-table>
-    </div>
-</div>
+    <!--图表部分-->
+    <Table :GoodsData="goodsData" :Btn="btn" :TbName="tbname" :BtnIf="btnif" :Tableif="tableif" :TabIf="tabif"></Table>
+  </div>
 </template>
 
 <script>
 import Mock from '@/mock/Mock.js'
+import table from '../other/table.vue'
 export default {
   data() {
     return {
+      //图表数据
       goodsData: [],
       //select选项
       categories: ['全部', '男装', '女装'],
@@ -86,19 +57,52 @@ export default {
       },
       //select选项
       options: [
-        {
-          key: '0',
-          label: '否',
-          value: '0',
-        }, {
-          key: '1',
-          label: '是',
-          value: '1',
-        }, {
-          key: '2',
-          label: '全部',
-          value: '2',
-        },]
+        { key: '0', label: '否', value: '0', },
+        { key: '1', label: '是', value: '1', },
+        { key: '2', label: '全部', value: '2', },
+      ],
+      //按钮名称
+      btn: {
+        name1: '检索',
+        name2: '显示全部',
+        name3: '新增商品',
+      },
+      //图表表头名称
+      tbname: {
+        goodimg: '商品',
+        name1: '价格',
+        name2: '销量',
+        name3: '库存',
+        name4: '退款数量',
+        name5: '退款金额',
+        goods: '操作',
+        name7: '管理员',
+        name8: '更新时间',
+      },
+      //按钮显示
+      btnif: {
+        totl: true,
+        if1: true,
+        if2: true,
+        if3: true,
+        if4: false,
+        if5: false,
+      },
+      //图表组件显示
+      tableif: {
+        goodimg: true,
+        if1: true,
+        if2: true,
+        if3: true,
+        if4: true,
+        if5: true,
+        if7: true,
+        if8: true,
+        goods: true,
+      },
+      tabif: {
+        totl: false
+      }
     }
   },
   //组件渲染时获取数据
@@ -120,6 +124,10 @@ export default {
     },
     //显示全部
     clear() {
+      this.$message({
+        type: 'success',
+        message: '已清空'
+      })
       this.queryParam = {
         name: '',
         id: '',
@@ -135,8 +143,19 @@ export default {
     },
     //上下架操作
     operate(item) {
-      item.state = !item.state
+      item.goods = !item.goods
     }
+  },
+  components: {
+    Table: table
+  },
+  provide() {
+    return {
+      Method1: this.requestData,
+      Method2: this.clear,
+      Method3: this.addGoods,
+      Operate: this.operate
+    };
   },
 
 }

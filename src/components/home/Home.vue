@@ -83,14 +83,18 @@
       <!--主页面渲染-->
       <router-view></router-view>
     </el-main>
-</el-container>
+  </el-container>
 </template>
 
 <script>
 import { Star, Goods, User, Coin, Tickets } from '@element-plus/icons-vue'
 import store from '@/store/index.js'
 export default {
-  name: 'Login',
+  name: 'Home',
+  data() {
+    return {
+    }
+  },
   components: {
     Star,
     Goods,

@@ -38,64 +38,16 @@
         </div>
       </el-container>
     </div>
-    <div class="content-row">
-      <el-row><!--五个操作-->
-        <el-button type="primary" @click="requestData">筛选</el-button>
-        <el-button type="danger" @click="clear">清空筛选</el-button>
-        <el-button type="primary" @click="exportData">导出</el-button>
-        <el-button type="primary" @click="dispatchGoods">批量发货</el-button>
-        <el-button type="primary" @click="exportDispatchGoods">批量下载发货样单</el-button>
-      </el-row>
-    </div>
-    <!--商品列表-->
-    <div>
-      <el-tabs @tab-click="handleClick"><!--handleClick-->
-        <el-tab-pane label="全部" name="first"></el-tab-pane>
-        <el-tab-pane label="未支付" name="second"></el-tab-pane>
-        <el-tab-pane label="已支付" name="third"></el-tab-pane>
-        <el-tab-pane label="待发货" name="fourth"></el-tab-pane>
-        <el-tab-pane label="已发货" name="fifth"></el-tab-pane>
-        <el-tab-pane label="支付超时" name="sixth"></el-tab-pane>
-      </el-tabs>
-    </div>
-    <div><!--改变操作-->
-      <el-table :data="orderList" style="width: 100%" @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="70px" />
-        <el-table-column label="商品种类" width="127" prop="name" />
-        <el-table-column label="总价/数量" width="127" prop="price" />
-        <el-table-column label="购买人员" width="127" prop="buyer" />
-        <el-table-column label="交易时间" width="210" prop="time" />
-        <el-table-column label="分销信息" width="127">
-          <template #default="scope">
-            <el-tag :type="scope.row.role ? '' : 'success'">{{ scope.row.role ? '经理' : '销售员' }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="商品状态" width="127">
-          <template #default="scope">
-            <el-tag :type="scope.row.state ? 'success' : 'danger'">{{ scope.row.state ? '已完成' : '未完成' }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="执行操作" width="200">
-          <template #default="scope"><!--删除和联系操作-->
-            <el-button type="danger" @click="deleteitem(scope.$index)">删除</el-button>
-            <el-button type="primary" @click="calluser(scope.row.phone)">联系</el-button>
-          </template>
-        </el-table-column>
-        <el-table-column label="支付方式" width="127">
-          <template #default="scope">
-            <el-tag :type="scope.row.payType ? 'success' : ''">{{ scope.row.payType ? '微信' : '支付宝' }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="信息来源" width="260" prop="source" />
-      </el-table>
-    </div>
-</div>
+    <Table :GoodsData="orderList" :Btn="btn" :TbName="tbname" :BtnIf="btnif" :Tableif="tableif" :TabIf="tabif">
+    </Table>
+  </div>
 </template>
 
 
 <script>
 import Mock from '@/mock/Mock.js'
 import Tool from '@/tools/Tool.js'
+import table from '../other/table.vue'
 
 export default {
   data() {
@@ -112,17 +64,89 @@ export default {
         sendTime: ''
       },
       //选中的订单
-      multipleSelection: []
+      multipleSelection: [],
+
+      //btn按钮名称
+      btn: {
+        name1: '筛选',
+        name2: '清空筛选',
+        name3: '导出',
+        name4: '批量发货',
+        name5: '批量下载发货样单',
+      },
+      //table图表表头名称
+      tbname: {
+        name1: '商品',
+        name2: '总价/数量',
+        name3: '购买人员',
+        name4: '交易时间',
+        tag1: '分销信息',
+        tag2: '商品状态',
+        tag3: '支付方式',
+        order: '操作',
+        name7: '来源'
+      },
+      //btn按钮显示
+      btnif: {
+        totl: true,
+        if1: true,
+        if2: true,
+        if3: true,
+        if4: true,
+        if5: true,
+      },
+      //table组件显示
+      tableif: {
+        Tselect: true,
+        goodimg: false,
+        if1: true,
+        if2: true,
+        if3: true,
+        if4: true,
+        if5: false,
+        if6: false,
+        tag1: true,
+        tag2: true,
+        tag3: true,
+        goods: false,
+        order: true,
+        leader: false,
+        if7: true,
+        if8: false,
+      },
+      tabif: {
+        totl: true
+      }
+
     }
   },
+  //向table子组件传方法
+  provide() {
+    return {
+      Method1: this.requestData,
+      Method2: this.clear,
+      Method3: this.exportData,
+      Method4: this.dispatchGoods,
+      Method5: this.exportDispatchGoods,
+      HandleClick: this.handleClick,
+      HandleSelectionChange: this.handleSelectionChange,
+      Deleteitem: this.deleteitem,
+      Calluser: this.calluser
+    }
+  },
+
   //组件渲染时获取数据
   mounted() {
     this.orderList = Mock.getOrder(this.$route.params.type)
   },
+
+
   //路由更新时刷新数据
   beforeRouteUpdate(to) {
     this.orderList = Mock.getOrder(to.params.type)
   },
+
+
   methods: {
     //请求数据
     requestData() {
@@ -187,8 +211,10 @@ export default {
         message: '正在联系：' + item
       })
     }
+  },
 
-
+  components: {
+    Table: table
   }
 }
 </script>

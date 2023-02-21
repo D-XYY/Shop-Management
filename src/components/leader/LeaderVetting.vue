@@ -14,36 +14,14 @@
         </div>
       </el-container>
     </div>
-    <div class="content-row">
-      <el-row><!--两个操作-->
-        <el-button type="primary" @click="requestData">检索</el-button>
-        <el-button type="primary" @click="clear">清空</el-button>
-      </el-row>
-    </div>
-    <div>
-      <el-table :data="list" style="width: 100%;">
-        <el-table-column label="用户信息" width="150" prop="name" />
-        <el-table-column label="所处状态" width="150">
-          <template #default="scope">
-            <el-tag :type="scope.row.state ? '' : 'success'">{{ scope.row.state ? '审核通过' : '审核中' }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="添加时间" width="250" prop="addTime" />
-        <el-table-column label="更新时间" width="250" prop="updateTime" />
-        <el-table-column label="操作">
-          <template #default="scope">
-            <el-button :type="scope.row.operate ? 'danger' : 'success'" @click="operate(scope.row)">{{ scope.row.operate
-              ? '下线' : '通过' }}</el-button>
-          </template>
-        </el-table-column>
 
-      </el-table>
-    </div>
-
-</div>
+    <Table :GoodsData="list" :Btn="btn" :TbName="tbname" :BtnIf="btnif" :Tableif="tableif" :TabIf="tabif">
+    </Table>
+  </div>
 </template>
 <script>
 import Mock from '@/mock/Mock.js'
+import table from '../other/table.vue'
 export default {
   data() {
     return {
@@ -51,9 +29,51 @@ export default {
         state: '',
         id: ''
       },
-      list: []
+      //数据源
+      list: [],
+      //按钮名称
+      btn: {
+        name1: '检索',
+        name2: '清空'
+      },
+      //table表头名称
+      tbname: {
+        name1: '用户信息',
+        tag1: '所处状态',
+        name2: '添加时间',
+        name3: '更新时间',
+        leader: '操作'
+      },
+      //按钮显示
+      btnif: {
+        totl: true,
+        if1: true,
+        if2: true,
+      },
+      //table表头显示
+      tableif: {
+        if1: true,
+        if2: true,
+        if3: true,
+        tag1: true,
+        leader: true,
+      },
+      tabif: {
+        totl: false
+      }
+    }
+
+  },
+
+  provide() {
+    return {
+      Method1: this.requestData,
+      Method2: this.clear,
+      Operateleader: this.operate
     }
   },
+
+
   methods: {
     //检索
     requestData() {
@@ -61,7 +81,7 @@ export default {
         type: 'success',
         message: '正在检索:' + JSON.stringify(this.queryParam)
       })
-      this.list = Mock.getList()
+      this.list = Mock.getvet()
     },
     //清空
     clear() {
@@ -69,16 +89,20 @@ export default {
         state: '',
         id: ''
       }
-      this.list = Mock.getList()
+      this.list = Mock.getvet()
     },
     //删除操作
     operate(item) {
-      item.operate = !item.operate
+      if (item.tag1.length > 2) return item.tag1 = '通过'
+      return item.tag1 = '待审核'
     }
   },
   mounted() {
-    this.list = Mock.getList()
+    this.list = Mock.getvet()
   },
+  components: {
+    Table: table
+  }
 
 }
 </script>
