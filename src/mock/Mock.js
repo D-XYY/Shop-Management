@@ -15,8 +15,6 @@ const Mock = {
         'tag3': mockjs.Random.boolean() ? '微信' : '支付宝',//支付方式
         'order': mockjs.mock(/\d{11}/),//手机号
         'prp7': mockjs.Random.url(),//来源
-        'tag1n': '刘佳颖',
-        'tag1m': '铁馨慧'
       }))
     }
     return array
